@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "885559779394",
+    "project_id": "tds-money",
+    "storage_bucket": "tds-money.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:885559779394:android:70250bb4f77e1519810ddb",
+        "android_client_info": {
+          "package_name": "com.example.tdsmoney"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDboYrKgjmVH0pw5wkvuof0NM6YotyFXc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
