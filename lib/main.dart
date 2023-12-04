@@ -1,3 +1,5 @@
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,18 +14,23 @@ import 'firebase_options.dart';
 
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp(title: "",));
+
+
 
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key, required title});
 
+
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
@@ -63,45 +70,47 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
 
 
   @override
   Widget build(BuildContext context) {
 
-    final theme = Theme.of(context);
 
     return Scaffold(
-        appBar: AppBar(
-          title: Row(
-              children: [
-                const Text(
-                    "Баланс: \$",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 25
-                    )
-                ),
-                IconButton(onPressed: () {},
-                    icon: const Icon(Icons.keyboard_arrow_down),
-                    color: Colors.black) //todo изменение счета
-              ]
-          ),
-          backgroundColor: Colors.green,
-        ),
+      appBar: AppBar(
+        backgroundColor: Colors.green,
+        title: Text("Баланс: \$"),
+      ),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection('transactions').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-          body:Center(
-    child: FloatingActionButton(
-    backgroundColor: Colors.green,
-    child: Icon(Icons.add),
-    onPressed: () {
-      print("asd");
-    FirebaseFirestore.instance
-        .collection('transactions')
-        .add({'text': 'data added through app'});
-    },
-    ),
-    )
-        );
+          return Column(
+            
+              children:[
+                Column(
+                  children: snapshot.data!.docs.map((document) {
+                    return ListTile(
+                      title: Text("${document['amount'] * (-1)}\$ ${document['category']}"),
+                    );
+                  }).toList(),),
+                IconButton(onPressed: (){
+                  Navigator.pushNamed(context, '/NewTransaction');
+                }, icon: Icon(Icons.add))
+              ]
+
+          );
+        },
+      ),
+
+    );
   }
 }
 
@@ -154,29 +163,29 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
 
 
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
               children:[
 
                 Column(
                   children: <Widget>[
                     TextField(
-                      decoration: const InputDecoration(labelText: "Сумма платежа"),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: <TextInputFormatter>[
-                        FilteringTextInputFormatter.digitsOnly
-                      ], // Only numbers can be entered
-                      onChanged: (value) {
+                        decoration: const InputDecoration(labelText: "Сумма платежа"),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
+                        ], // Only numbers can be entered
+                        onChanged: (value) {
 
-                        amount = int.parse(value);
-                      }
+                          amount = int.parse(value);
+                        }
                     ),
-                     TextField(
-                       decoration: const InputDecoration(labelText: "Категория"), //todo кнопки выбора категории
-                       onChanged: (value) {
+                    TextField(
+                        decoration: const InputDecoration(labelText: "Категория"), //todo кнопки выбора категории
+                        onChanged: (value) {
 
-                         category = value;
-                       }
+                          category = value;
+                        }
                     ),
 
                   ],
@@ -184,11 +193,12 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                 ),
                 IconButton(
                     onPressed: () async {
-                      print("asd");
+
                       FirebaseFirestore.instance
                           .collection('transactions')
-                          .add({'text': 'data added through app'});
-                      }, icon: const Icon(Icons.check))
+                          .add({'amount': amount, "category": category});
+                      Navigator.pop(context);
+                    }, icon: const Icon(Icons.check))
               ]
           ),
         )
