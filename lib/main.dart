@@ -239,7 +239,7 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
   String category = "";
   int type = -1;
 
-
+  var keyboard_style = TextStyle(color: Colors.black);
 
   @override
   Widget build(BuildContext context) {
@@ -258,73 +258,143 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
           backgroundColor: Colors.green,
         ),
         body: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(children: [Expanded(child:ListTile(
+                title: Text("Расход"),
+                leading: Radio<int>(value: -1, groupValue: type, onChanged: (int? value) {
+                  setState(() {
+                    type = value!;
+                  });
+                })
+            )),
+              Expanded(child:ListTile(
+                  title: Text("Доход"),
+                  leading: Radio<int>(value: 1, groupValue: type, onChanged: (int? value) {
+                    setState(() {
+                      type = value!;
+                    });
+                  }
+                  )))
+            ]),
+            Padding(padding: EdgeInsets.all(20),
+                child:SizedBox(
+                  width: 300,
+                  height: 250,
+                  child: GridView(
+    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+    mainAxisSpacing: 0,
+    crossAxisCount: 3,
+    ),
+                    children: const [
+                      Text("Продукты"),
 
-            children:[
+                      Text("Кафе"),
 
-              Column(
-                children: <Widget>[
-                  TextField(
-                      decoration: const InputDecoration(labelText: "Сумма платежа"),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: <TextInputFormatter>[
-                        FilteringTextInputFormatter.digitsOnly
-                      ], // Only numbers can be entered
-                      onChanged: (value) {
+                      Text("Здоровье"),
 
-                        amount = int.parse(value);
-                      }
+                      Text("Транспорт"),
+
+                      Text("Покупки"),
+
+                      Text("Дом"),
+
+                      Text("Семья"),
+
+                      Text("Подарки"),
+
+                      Text("Подарки"),
+
+                    ],
                   ),
-                  TextField(
-                      decoration: const InputDecoration(labelText: "Категория"), //todo кнопки выбора категории
-                      onChanged: (value) {
+                )),
 
-                        category = value;
-                      }
-                  ),
+            Padding(
+                padding: EdgeInsets.only(left: 20),
+                child:Align(alignment: Alignment.centerLeft,
+                    child:Text("Сумма: $amount"))
+            ),
 
+            Align(
+                alignment: Alignment.topLeft, child: SizedBox(
+                width: 350,
+                height: 250,
+                child: Row(
+                    children:[
+                      SizedBox(
+                          width:180,
+                          height: 240,
+                          child:GridView(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          mainAxisSpacing: 0,
+                          crossAxisCount: 3,
+                        ),
+                        children: [
+                          TextButton(onPressed: (){}, child: Text("1", style: keyboard_style)),
+                          TextButton(onPressed: (){}, child: Text("2", style: keyboard_style)),
+                          TextButton(onPressed: (){}, child: Text("3", style: keyboard_style)),
+                          TextButton(onPressed: (){}, child: Text("4", style: keyboard_style)),
+                          TextButton(onPressed: (){}, child: Text("5", style: keyboard_style)),
+                          TextButton(onPressed: (){}, child: Text("6", style: keyboard_style)),
+                          TextButton(onPressed: (){}, child: Text("7", style: keyboard_style)),
+                          TextButton(onPressed: (){}, child: Text("8", style: keyboard_style)),
+                          TextButton(onPressed: (){}, child: Text("9", style: keyboard_style)),
+                          TextButton(onPressed: (){}, child: Text("0", style: keyboard_style)),
+                          TextButton(onPressed: (){}, child: Text(".", style: keyboard_style)),
+                          TextButton(onPressed: (){}, child: Text("00", style: keyboard_style)),
+                        ],
 
-                  ListTile(
-                      title: const Text("Расход"),
-                      leading: Radio<int>(value: -1, groupValue: type, onChanged: (int? value) {
-                        setState(() {
-                          type = value!;
-                        });
-                      })
-                  ),
-                  ListTile(
-                      title: const Text("Доход"),
-                      leading: Radio<int>(value: 1, groupValue: type, onChanged: (int? value) {
-                        setState(() {
-                          type = value!;
-                        });
-                      }
                       )),
+                      SizedBox(
+                          width: 60,
+                          height: 250,
+                          child: ListView(
+
+                          children: [
+                            SizedBox(height: 7),
+                            IconButton(onPressed: (){}, icon: const Icon(Icons.arrow_back)),
+                            SizedBox(height: 13),
+                            IconButton(onPressed: (){}, icon: const Icon(Icons.add)),
+                            SizedBox(height: 13),
+                            IconButton(onPressed: (){}, icon: const Icon(Icons.remove)),
+                            SizedBox(height: 13),
+                            TextButton(onPressed: (){}, child: const Text("=", style: TextStyle(fontSize: 30, color: Colors.black),))
+                          ]
+
+                      )),
+                      SizedBox(
+                          width: 100,
+                          height: 250,
+                          child: ListView(
+                        children: [
+                          const SizedBox(height: 7),
+                          TextButton(onPressed: (){}, child: Text("Сегодня", style: keyboard_style)),
+                          const SizedBox(height: 13),
+                          TextButton(onPressed: (){}, child: Text("Наличные", style: keyboard_style)),
+                          const SizedBox(height: 13),
+                          TextButton(onPressed: (){}, child: Text("Добавить примечание", style: keyboard_style)),
+
+                        ],
+                      ))
+
+                    ])
+
+            )),
 
 
 
 
+            Align(alignment: Alignment.bottomCenter,child:SizedBox(
+                width: 100,
+                child: Row(
+                    children: [
+                      IconButton(onPressed: (){}, icon: const Icon(Icons.check)),
+                      IconButton(onPressed: (){}, icon: const Icon(Icons.close))
+                    ]
+                )
+            )),
 
-                ],
-
-              ),
-              IconButton(
-                  onPressed: () async {
-
-                    FirebaseFirestore.instance
-                        .collection('transactions')
-                        .add(
-                        {
-                          'userId':_deviceData["androidId"],
-                          'amount': amount,
-                          'category': category,
-                          'type': type
-                        }
-                    );
-                    Navigator.pop(context);
-                  }, icon: const Icon(Icons.check))
-            ]
-        )
+          ],
+        ),
 
 
     );
