@@ -1,11 +1,12 @@
 import 'Transaction.dart';
 
+
 class Account {
   late String title;
   late int balance;
   late String currency; //наверное нужен кортеж с разными падежами валюты
   late String currencyIconPath;
-  late List<Transaction> history;
+  late List<MyTransaction> history;
 
   Account(
       this.title, this.balance,
@@ -13,10 +14,10 @@ class Account {
       this.history
       );
 
-  void addTransaction(Transaction transaction){
+  void addMyTransaction(MyTransaction transaction){
     //для пополнения счета транзакция должна быть с отрицательной суммой
     history.add(transaction);
-    balance += transaction.amount;
+    balance += transaction.amount * transaction.type;
   }
 
   Map getStatistics(DateTime start, DateTime end, bool option){

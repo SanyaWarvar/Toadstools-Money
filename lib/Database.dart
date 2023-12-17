@@ -1,56 +1,64 @@
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
-import 'package:test/Account.dart';
-import 'package:test/Transaction.dart' as t;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class DatabaseHelper {
-  static const int _version = 1;
-  static const String _dbName = "TransactionDB.db";
+final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+final CollectionReference _mainCollection = _firestore.collection('transactions');
 
-  static Future<Database> _getDB() async {
-    return openDatabase(
-        join(await getDatabasesPath(), _dbName),
-        onCreate: (db, version) async => await db.execute(
-            "CREATE TABLE TransactionDB(id INTEGER PRIMARY KEY, category TEXT NOT NULL, description TEXT, amount INTEGER, date TEXT NOT NULL);"),
-        version: _version);
+class Database {
+  static String? userUid;
+
+  static Future<void> addItem({
+    required String title,
+    required String description,
+  }) async {
+    DocumentReference documentReferencer =
+    _mainCollection.doc(userUid).collection('transactions').doc();
+
+    Map<String, dynamic> data = <String, dynamic>{
+      "title": title,
+      "description": description,
+    };
+
+    await documentReferencer
+        .set(data)
+        .whenComplete(() => print("Заметка добавлена в базу"))
+        .catchError((e) => print(e));
   }
 
-  static Future<int> addTransaction(t.Transaction transaction) async {
-    final db = await _getDB();
-    return await db.insert("TransactionDB", transaction.toJson(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+  static Stream<QuerySnapshot> readItems() {
+    CollectionReference notesItemCollection =
+    _mainCollection.doc(userUid).collection('transactions');
+
+    return notesItemCollection.snapshots();
   }
 
-  static Future<int> updateTransaction(t.Transaction transaction) async {
-    final db = await _getDB();
-    return await db.update("TransactionDB", transaction.toJson(),
-        where: 'id = ?',
-        whereArgs: [transaction.id],
-        conflictAlgorithm: ConflictAlgorithm.replace);
+  static Future<void> updateItem({
+    required String title,
+    required String description,
+    required String docId,
+  }) async {
+    DocumentReference documentReferencer =
+    _mainCollection.doc(userUid).collection('transactions').doc(docId);
+
+    Map<String, dynamic> data = <String, dynamic>{
+      "title": title,
+      "description": description,
+    };
+
+    await documentReferencer
+        .update(data)
+        .whenComplete(() => print("Заметка в базе успешно обновлена"))
+        .catchError((e) => print(e));
   }
 
-  static Future<int> deleteTransaction(t.Transaction transaction) async {
-    final db = await _getDB();
-    return await db.delete(
-      "TransactionDB",
-      where: 'id = ?',
-      whereArgs: [transaction.id],
-    );
-  }
+  static Future<void> deleteItem({
+    required String docId,
+  }) async {
+    DocumentReference documentReferencer =
+    _mainCollection.doc(userUid).collection('transactions').doc(docId);
 
-  static Future<List<t.Transaction>?> getAllTransaction() async {
-    final db = await _getDB();
-
-    final List<Map<String, dynamic>> maps = await db.query("TransactionDB");
-
-    for (var element in maps){
-      print(element);
-    }
-
-    if (maps.isEmpty) {
-      return null;
-    }
-
-    return List.generate(maps.length, (index) => t.Transaction.fromJson(maps[index]));
+    await documentReferencer
+        .delete()
+        .whenComplete(() => print('Заметка успешно удалена из базы'))
+        .catchError((e) => print(e));
   }
 }
