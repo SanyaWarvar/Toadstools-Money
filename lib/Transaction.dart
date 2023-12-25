@@ -4,7 +4,7 @@ import 'Account.dart';
 class MyTransaction{
 
   late int id;
-  late int amount;
+  late double amount;
   late String description;
   late String category;
   late DateTime date;
@@ -21,7 +21,7 @@ class MyTransaction{
       _type = "Расход";
     }
 
-    return ("$_type $amount $category "
+    return ("$_type $amount\$ - $category "
         "${date.day}.${date.month}.${date.year}-${date.hour}:${date.minute} "
         "$description");
   }
@@ -35,11 +35,11 @@ class MyTransaction{
     "type": type
   };
 
-  factory MyTransaction.fromJson(Map<String, dynamic> json) => MyTransaction(
-    json["id"],
+  factory MyTransaction.fromJson(dynamic json) => MyTransaction(
+    0,
     json["amount"],
     json["category"],
-    DateTime.now(),//json["date"],
+    json["date"].toDate(),
     json["description"],
     json["type"]
   );

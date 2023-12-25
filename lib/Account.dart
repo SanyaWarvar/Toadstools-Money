@@ -3,7 +3,7 @@ import 'Transaction.dart';
 
 class Account {
   late String title;
-  late int balance;
+  late double balance;
   late String currency; //наверное нужен кортеж с разными падежами валюты
   late String currencyIconPath;
   late List<MyTransaction> history;
@@ -21,11 +21,13 @@ class Account {
   }
 
   Map getStatistics(DateTime start, DateTime end, bool option){
-    //если option == true, то будут браться и расходы, и доходы
+    //если option == true, то будут только доходы. Иначе только расходы
     var statistic = {};
     for(var item in history){
-      if (start.isBefore(item.date) && end.isAfter(item.date)) {
-        if (option == true || item.amount < 0) {
+
+      if (start.toUtc().isBefore(item.date) && end.toUtc().isAfter(item.date)) {
+        if (((option == true) && (item.type > 0)) ||
+            ((option == false) && (item.type < 0))) {
           if (statistic[item.category] != null) {
             statistic[item.category] += item.amount;
           } else {
@@ -33,7 +35,11 @@ class Account {
           }
         }
       }
-    }
+
+
+
+      }
+
     return statistic;
   }
 
@@ -47,4 +53,13 @@ class Account {
     }
     return sum;
   }
+}
+
+
+main(){
+  Account ac = Account("title", 0, "currency", "currencyIconPath", []);
+  ac.addMyTransaction(MyTransaction(0, 15, "s", DateTime(2023, 12, 1), "description", -1));
+  print(ac.getStatistics(DateTime(2005, 1, 2), DateTime(2023, 12, 2), false));
+
+
 }
