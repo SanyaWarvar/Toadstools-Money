@@ -10,6 +10,8 @@ class MyTransaction{
   late DateTime date;
   late int type;
 
+
+
   MyTransaction(this.id, this.amount, this.category, this.date, this.description, this.type);
 
   @override
@@ -31,8 +33,9 @@ class MyTransaction{
     "amount": amount,
     "description": description,
     "category": category,
-    "date": date.toString(),
-    "type": type
+    "date": date,
+    "type": type,
+
   };
 
   factory MyTransaction.fromJson(dynamic json) => MyTransaction(
@@ -41,34 +44,11 @@ class MyTransaction{
     json["category"],
     json["date"].toDate(),
     json["description"],
-    json["type"]
+    json["type"],
+
   );
-
-
-
-
 }
 
 
 
 
-main(){
-
-
-
-  var a = Account("Банковский счет", 0, "Рубль", "pass", []);
-  var tr1 = MyTransaction(0, 44, "Gasoline", DateTime.now(), "", -1);
-  var tr2 = MyTransaction(1, 14, "Food", DateTime.now(), "", -1);
-  var tr3 = MyTransaction(2, 75, "Clothes", DateTime.now(), "", -1);
-  var tr4 = MyTransaction(3, 1623, "Salary from first job", DateTime.now(), "", 1);
-  var tr5 = MyTransaction(4, 1547, "Salary from second job", DateTime.now(), "", 1);
-  
-  a.addMyTransaction(tr4);
-  a.addMyTransaction(tr5);
-  a.addMyTransaction(tr2);
-  a.addMyTransaction(tr3);
-  a.addMyTransaction(tr1);
-
-  print(a.getStatistics(DateTime(2020, 1, 3), DateTime(2021, 12, 3), true));
-  print(a.sumByPeriod(DateTime(2020, 1, 3), DateTime(2021, 12, 3), false));
-}
