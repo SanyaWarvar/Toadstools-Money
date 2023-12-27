@@ -28,8 +28,7 @@
 
 2.Экономия ресурсов: Создание и уничтожение объекта базы данных может быть затратным в плане ресурсов. Используя паттерн синглтон, можно избежать создания множества экземпляров базы данных и сэкономить ресурсы мобильного устройства.
 
-
-<img src="[https://github.com/SanyaWarvar/Toadstools-Money/assets/120565896/7c313cf7-e7cc-46d7-9601-f3da6da09766](https://github.com/SanyaWarvar/Toadstools-Money/assets/120565896/74956b35-78f0-41ea-aff2-32c42bd9027c)" width="250" height="300" />
+<img src="https://github.com/SanyaWarvar/Toadstools-Money/assets/120565896/74956b35-78f0-41ea-aff2-32c42bd9027c" width="400" height="300" />
 
 ## Точно не стоит использовать паттерн MVC (Model-View-Controller)
 
@@ -37,11 +36,31 @@
 
 # Установка приложения
 
-Скачать на android устройство установочный файл:
- **build\app\outputs\flutter-apk\app-release.apk**
+## Сгенерировать .apk файл
+  1. Установить flutter. [Ссылка](https://docs.flutter.dev/get-started/install)
+  2. Скопировать этот репозиторий
+  ```
+  git clone https://github.com/SanyaWarvar/Toadstools-Money
+  ```
+  3.
+  ```
+  flutter pub get
+  flutter build apk --release
+  ```
+   4. Сгенерированный файл будет здесь: Project\build\app\outputs\apk\release\app-release.apk
+## Установить сгенерированный файл на телефон (Android)
+
+Скачать на android устройство установочный файл на компьютер:
+
+Если .apk файл был сгенерирова самостоятельно, то он будет здесь: **Project\build\app\outputs\apk\release\app-release.apk**
+
+Можно скачать только этот файл из репозитория, он здесь: **build\app\outputs\flutter-apk\app-release.apk**
  
-Либо скачать этот же файл с яндекс диска:
-**https://disk.yandex.ru/d/Jft_-G-gCEj3HQ**
+Либо скачать этот же файл с яндекс диска: **https://disk.yandex.ru/d/Jft_-G-gCEj3HQ**
+
+Переслать этот файл на мобильное устройство (либо скачивать сразу не него).
+
+Установить скачанный файл (следовать указаниям системы).
 
 # Пользовательское руководство
 
