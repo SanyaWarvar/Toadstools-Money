@@ -1,6 +1,3 @@
-
-import 'Account.dart';
-
 class MyTransaction{
 
   late int id;
@@ -9,8 +6,6 @@ class MyTransaction{
   late String category;
   late DateTime date;
   late int type;
-
-
 
   MyTransaction(this.id, this.amount, this.category, this.date, this.description, this.type);
 

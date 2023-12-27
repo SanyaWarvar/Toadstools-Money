@@ -10,6 +10,8 @@ import 'package:test/repeat.dart';
 import 'firebase_options.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
+final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+//final CollectionReference _mainCollection = _firestore.collection('transactions');
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -108,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
   getBalance() async {
     Account entries =  Account("debugname", 0, "₽", "", []);
 
-    await FirebaseFirestore.instance.
+    await _firestore.
     collection("transactions").
     where("userId", isEqualTo: "${_deviceData["androidId"]}").
     get().then((document) {
@@ -127,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   checkRepeat() async {
-    await FirebaseFirestore.instance.
+    await _firestore.
     collection("repeat").
     where("userId", isEqualTo: _deviceData["androidId"]).
     get().then((document) {
@@ -140,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
         {
           rep.lastDate = DateTime(rep.lastDate.year, rep.lastDate.month, rep.lastDate.day + rep.period);
 
-          FirebaseFirestore.instance
+          _firestore
               .collection('repeat').doc(
               element.id
           )
@@ -154,7 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 "type": rep.type,
               });
 
-          FirebaseFirestore.instance
+          _firestore
               .collection('transactions').doc(
               "${_deviceData["androidId"]}-${currentAccount.title}-${rep.type}-${rep.category}-${rep.lastDate.year}.${rep.lastDate.month}.${rep.lastDate.day}-${currentAccount.history.length}"
           )
@@ -205,7 +207,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('transactions').where(
+        stream: _firestore.collection('transactions').where(
             "userId", isEqualTo: "${_deviceData["androidId"]}"
         ).snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -292,7 +294,7 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
   getBalance() async {
     Account entries =  Account("debugname", 0, "₽", "", []);
 
-    await FirebaseFirestore.instance.
+    await _firestore.
     collection("transactions").
     where("userId", isEqualTo: "${_deviceData["androidId"]}").
     get().then((document) {
@@ -355,7 +357,7 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
 
                   int l = currentAccount.history.length;
 
-                  FirebaseFirestore.instance
+                  _firestore
                       .collection('transactions').doc(
                       "${_deviceData["androidId"]}-${currentAccount.title}-$type-$category-${date.year}.${date.month}.${date.day}-$l"
                   )
@@ -374,7 +376,7 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                       MyTransaction(0, double.parse(amount), category, date, description, type));
 
                   if (repeat){
-                    FirebaseFirestore.instance
+                    _firestore
                         .collection('repeat').doc(
                         "${_deviceData["androidId"]}-${currentAccount.title}-$type-$category-${date.year}.${date.month}.${date.day}-$l"
                     )
@@ -759,7 +761,7 @@ class _StatisticScreen extends State<StatisticScreen> {
   bool option = false;
   getBalance() async {
     var entries = Account("title", 0, "currency", "currencyIconPath", []);
-    await FirebaseFirestore.instance.
+    await _firestore.
     collection("transactions").
     where("userId", isEqualTo: _deviceData["androidId"]).
     get().then((document) {
@@ -950,7 +952,7 @@ class _GoalScreenState extends State<GoalScreen> {
 
   getBalance() async {
     var entries = Account("title", 0, "currency", "currencyIconPath", []);
-    await FirebaseFirestore.instance.
+    await _firestore.
     collection("transactions").
     where("userId", isEqualTo: _deviceData["androidId"]).
     get().then((document) {
@@ -982,7 +984,7 @@ class _GoalScreenState extends State<GoalScreen> {
             }, icon: const Icon(Icons.close, color: Colors.red, size: 35)),
             IconButton(onPressed: (){
 //todo индекс в название
-              FirebaseFirestore.instance
+              _firestore
                   .collection('goal').doc(
                   "${_deviceData["androidId"]}-${currentAccount.title}-$goalType-$goalCategory-${firstDate.year}.${firstDate.month}.${firstDate.day}-${secondDate.year}.${secondDate.month}.${secondDate.day}"
 
@@ -1169,7 +1171,7 @@ class _RepeatListState extends State<RepeatList> {
   getBalance() async {
     Account entries =  Account("debugname", 0, "₽", "", []);
 
-    await FirebaseFirestore.instance.
+    await _firestore.
     collection("transactions").
     where("userId", isEqualTo: "${_deviceData["androidId"]}").
     get().then((document) {
@@ -1189,7 +1191,7 @@ class _RepeatListState extends State<RepeatList> {
 
   getList() async {
     var entries = [];
-    await FirebaseFirestore.instance.
+    await _firestore.
     collection("reapeat").
     where("userId", isEqualTo: "${_deviceData["androidId"]}").
     get().then((document) {
@@ -1221,7 +1223,7 @@ class _RepeatListState extends State<RepeatList> {
           backgroundColor: Colors.green,
         ),
         body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('repeat').where(
+          stream: _firestore.collection('repeat').where(
               "userId", isEqualTo: "${_deviceData["androidId"]}"
           ).snapshots(),
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -1305,14 +1307,14 @@ class _GoalsListState extends State<GoalsList> {
 
     });
 
-    await getBalance();
-    await getList();
+    getBalance();
+    getList();
   }
 
   getBalance() async {
     Account entries =  Account("debugname", 0, "₽", "", []);
 
-    await FirebaseFirestore.instance.
+    await _firestore.
     collection("transactions").
     where("userId", isEqualTo: "${_deviceData["androidId"]}").
     get().then((document) {
@@ -1332,7 +1334,7 @@ class _GoalsListState extends State<GoalsList> {
 
   getList() async {
     var entries = [];
-    await FirebaseFirestore.instance.
+    await _firestore.
     collection("reapeat").
     where("userId", isEqualTo: "${_deviceData["androidId"]}").
     get().then((document) {
@@ -1367,7 +1369,7 @@ class _GoalsListState extends State<GoalsList> {
           backgroundColor: Colors.green,
         ),
         body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('goal').where(
+          stream: _firestore.collection('goal').where(
               "userId", isEqualTo: "${_deviceData["androidId"]}"
           ).snapshots(),
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {

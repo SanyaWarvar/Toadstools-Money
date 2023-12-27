@@ -1,6 +1,5 @@
 import 'Transaction.dart';
 
-
 class Account {
   late String title;
   late double balance;
@@ -35,9 +34,6 @@ class Account {
           }
         }
       }
-
-
-
       }
 
     return statistic;
@@ -78,7 +74,4 @@ class Account {
     "history": history/*toJsonHistory()*/,
 
   };
-
 }
-
-

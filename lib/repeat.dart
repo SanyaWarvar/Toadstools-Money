@@ -40,12 +40,4 @@ class RepeatPeriod{
       json["type"],
 
   );
-
-}
-
-
-main(){
-
-   
-
 }
