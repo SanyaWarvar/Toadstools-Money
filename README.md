@@ -28,7 +28,7 @@
 
 2.Экономия ресурсов: Создание и уничтожение объекта базы данных может быть затратным в плане ресурсов. Используя паттерн синглтон, можно избежать создания множества экземпляров базы данных и сэкономить ресурсы мобильного устройства.
 
-<img src="https://github.com/SanyaWarvar/Toadstools-Money/assets/120565896/74956b35-78f0-41ea-aff2-32c42bd9027c" width="400" height="300" />
+<img src="https://github.com/SanyaWarvar/Toadstools-Money/assets/120565896/74956b35-78f0-41ea-aff2-32c42bd9027c" width="700" height="300" />
 
 ## Точно не стоит использовать паттерн MVC (Model-View-Controller)
 
