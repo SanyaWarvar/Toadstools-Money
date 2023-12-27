@@ -1,6 +1,7 @@
 class MyTransaction{
+  //транзакция
 
-  late int id;
+  late int id;  //планировалось для расширения, на данный момент не используется
   late double amount;
   late String description;
   late String category;
@@ -11,6 +12,7 @@ class MyTransaction{
 
   @override
   String toString(){
+    //преобразование в строку
     String _type = "";
     if (type == 1) {
       _type = "Пополнение";
@@ -23,17 +25,9 @@ class MyTransaction{
         "$description");
   }
 
-  Map<String, dynamic> toJson() =>{
-    "id": id,
-    "amount": amount,
-    "description": description,
-    "category": category,
-    "date": date,
-    "type": type,
-
-  };
-
   factory MyTransaction.fromJson(dynamic json) => MyTransaction(
+    //преобразование из json
+
     0,
     json["amount"],
     json["category"],
@@ -43,7 +37,3 @@ class MyTransaction{
 
   );
 }
-
-
-
-

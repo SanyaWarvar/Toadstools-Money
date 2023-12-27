@@ -77,6 +77,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  //Гланый экран приложения. Отображает все транзакции пользователя.
+
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
 
   Account currentAccount =  Account("debugname", 0, "₽", "", []);
@@ -87,6 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+    //инициализация данных
     super.initState();
     initPlatformState();
     WidgetsBinding.instance.addPostFrameCallback((_){
@@ -95,6 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
   Future<void> initPlatformState() async {
+    //инициализация данных
     var deviceData = <String, dynamic>{};
     deviceData = _readAndroidBuildData(await deviceInfoPlugin.androidInfo);
     setState(() {
@@ -108,6 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
   getBalance() async {
+    //подсчет баланса
     Account entries =  Account("debugname", 0, "₽", "", []);
 
     await _firestore.
@@ -129,6 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   checkRepeat() async {
+    //проверка на добавление повторяющихся платежей
     await _firestore.
     collection("repeat").
     where("userId", isEqualTo: _deviceData["androidId"]).
@@ -200,7 +207,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Row(
             children: [
-              Text("Баланс: ${currentAccount.balance}${currentAccount.currency}"),
+              Text("Баланс: ${currentAccount.balance}₽"),
             ]
         ),
         backgroundColor: Colors.green,
@@ -269,6 +276,9 @@ class NewTransactionScreen extends StatefulWidget {
 }
 
 class _NewTransactionScreenState extends State<NewTransactionScreen> {
+  
+  //экран создания новых транзакций
+  
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   Account currentAccount =  Account("debugname", 0, "₽", "", []);
 
@@ -276,12 +286,14 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
 
   @override
   void initState() {
+    //инициализация данных
     super.initState();
     initPlatformState();
 
   }
 
   Future<void> initPlatformState() async {
+    //инициализация данных
     var deviceData = <String, dynamic>{};
     deviceData = _readAndroidBuildData(await deviceInfoPlugin.androidInfo);
     setState(() {
@@ -292,6 +304,7 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
   }
 
   getBalance() async {
+    //подсчет баланса
     Account entries =  Account("debugname", 0, "₽", "", []);
 
     await _firestore.
@@ -369,7 +382,7 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                         "description": description,
                         "userId": _deviceData["androidId"],
                         "type": type,
-                        "accountName": "${_deviceData["androidId"]}-${currentAccount.title}-${currentAccount.currency}"
+                        "accountName": "${_deviceData["androidId"]}-${currentAccount.title}-₽"
                       });
 
                   currentAccount.addMyTransaction(
@@ -389,7 +402,7 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                           "amount": double.parse(amount),
                           "category": category,
                           "type": type,
-                          "accountName": "${_deviceData["androidId"]}-${currentAccount.title}-${currentAccount.currency}" //todo replace normal
+                          "accountName": "${_deviceData["androidId"]}-${currentAccount.title}-₽"
                         });
 
                   }
@@ -404,7 +417,7 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
       appBar: AppBar(
         title: Row(
             children: [
-              Text("Баланс: ${currentAccount.balance}${currentAccount.currency}"),
+              Text("Баланс: ${currentAccount.balance}₽"),
             ]
         ),
         backgroundColor: Colors.green,
@@ -727,8 +740,11 @@ class StatisticScreen extends StatefulWidget {
 }
 
 class _StatisticScreen extends State<StatisticScreen> {
+  
+  //Экран отображения статистики
+  
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-  Account currentAccount = Account("title", 0, "currency", "currencyIconPath", []);
+  Account currentAccount = Account("title", 0, "₽", "currencyIconPath", []);
   Map<String, dynamic> _deviceData = <String, dynamic>{};
 
   Map<String, PieChartSectionData> pieData = {};
@@ -736,12 +752,14 @@ class _StatisticScreen extends State<StatisticScreen> {
 
   @override
   void initState() {
+    //инициализация данных
     super.initState();
     initPlatformState();
 
   }
 
   Future<void> initPlatformState() async {
+    //инициализация данных
     var deviceData = <String, dynamic>{};
     deviceData = _readAndroidBuildData(await deviceInfoPlugin.androidInfo);
     setState(() {
@@ -760,7 +778,9 @@ class _StatisticScreen extends State<StatisticScreen> {
   DateTime secondDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59, 59);
   bool option = false;
   getBalance() async {
-    var entries = Account("title", 0, "currency", "currencyIconPath", []);
+    //подсчет баланса
+    
+    var entries = Account("title", 0, "₽", "currencyIconPath", []);
     await _firestore.
     collection("transactions").
     where("userId", isEqualTo: _deviceData["androidId"]).
@@ -792,11 +812,11 @@ class _StatisticScreen extends State<StatisticScreen> {
           title: Row(
               children: [
                 Text(
-                  "Баланс: ${currentAccount.balance}\$",
+                  "Баланс: ${currentAccount.balance}₽",
 
                 ),
                 IconButton(onPressed: () {},
-                    icon: const Icon(Icons.keyboard_arrow_down)), //todo изменение счета
+                    icon: const Icon(Icons.keyboard_arrow_down)),
 
               ]
           ),
@@ -857,13 +877,12 @@ class _StatisticScreen extends State<StatisticScreen> {
                     }
                     )))
               ]),
-              Row(
+              Column(
                 children: [
                   SizedBox(
                       width: 150,
                       height: 150,
                       child:PieChart(PieChartData(
-
                           centerSpaceRadius: 50,
                           centerSpaceColor: Colors.black54,
                           borderData: FlBorderData(show: false),
@@ -915,20 +934,24 @@ class GoalScreen extends StatefulWidget {
 
 class _GoalScreenState extends State<GoalScreen> {
 
+  // экран создания целей
+
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-  Account currentAccount = Account("title", 0, "currency", "currencyIconPath", []);
+  Account currentAccount = Account("title", 0, "₽", "currencyIconPath", []);
   Map<String, dynamic> _deviceData = <String, dynamic>{};
 
 
 
   @override
   void initState() {
+    //инициализация данных
     super.initState();
     initPlatformState();
 
   }
 
   Future<void> initPlatformState() async {
+    //инициализация данных
     var deviceData = <String, dynamic>{};
     deviceData = _readAndroidBuildData(await deviceInfoPlugin.androidInfo);
     setState(() {
@@ -951,7 +974,8 @@ class _GoalScreenState extends State<GoalScreen> {
 
 
   getBalance() async {
-    var entries = Account("title", 0, "currency", "currencyIconPath", []);
+    //подсчет баланса
+    var entries = Account("title", 0, "₽", "currencyIconPath", []);
     await _firestore.
     collection("transactions").
     where("userId", isEqualTo: _deviceData["androidId"]).
@@ -983,7 +1007,7 @@ class _GoalScreenState extends State<GoalScreen> {
 
             }, icon: const Icon(Icons.close, color: Colors.red, size: 35)),
             IconButton(onPressed: (){
-//todo индекс в название
+
               _firestore
                   .collection('goal').doc(
                   "${_deviceData["androidId"]}-${currentAccount.title}-$goalType-$goalCategory-${firstDate.year}.${firstDate.month}.${firstDate.day}-${secondDate.year}.${secondDate.month}.${secondDate.day}"
@@ -1013,11 +1037,10 @@ class _GoalScreenState extends State<GoalScreen> {
           title: Row(
               children: [
                 Text(
-                  "Баланс: ${currentAccount.balance}\$",
-
+                  "Баланс: ${currentAccount.balance}₽",
                 ),
                 IconButton(onPressed: () {},
-                    icon: const Icon(Icons.keyboard_arrow_down)), //todo изменение счета
+                    icon: const Icon(Icons.keyboard_arrow_down)),
 
               ]
           ),
@@ -1025,8 +1048,6 @@ class _GoalScreenState extends State<GoalScreen> {
         ),
         body: Column(
             children: [
-
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -1048,7 +1069,7 @@ class _GoalScreenState extends State<GoalScreen> {
                   Column(
                     children: [
                       const Text("Дата окончания"),
-                      //todo вторая дата не может быть раньше первой
+
                       TextButton(onPressed: () async {
                         secondDate = await onTapFunction(context: context);
                         setState(()  {
@@ -1143,20 +1164,26 @@ class RepeatList extends StatefulWidget {
 }
 
 class _RepeatListState extends State<RepeatList> {
+
+  // Экран отображения повторяющихся платежей
+
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-  Account currentAccount = Account("title", 0, "currency", "currencyIconPath", []);
+  Account currentAccount = Account("title", 0, "₽", "currencyIconPath", []);
   Map<String, dynamic> _deviceData = <String, dynamic>{};
 
   List repeatList = [];
 
   @override
   void initState() {
+    //инициализация данных
+
     super.initState();
     initPlatformState();
 
   }
 
   Future<void> initPlatformState() async {
+    //инициализация данных
     var deviceData = <String, dynamic>{};
     deviceData = _readAndroidBuildData(await deviceInfoPlugin.androidInfo);
     setState(() {
@@ -1169,6 +1196,7 @@ class _RepeatListState extends State<RepeatList> {
   }
 
   getBalance() async {
+    //подсчет баланса
     Account entries =  Account("debugname", 0, "₽", "", []);
 
     await _firestore.
@@ -1190,6 +1218,7 @@ class _RepeatListState extends State<RepeatList> {
   }
 
   getList() async {
+    //получение всех повторяющихся платежей
     var entries = [];
     await _firestore.
     collection("reapeat").
@@ -1213,10 +1242,10 @@ class _RepeatListState extends State<RepeatList> {
           title: Row(
               children: [
                 Text(
-                  "Баланс: ${currentAccount.balance}\$",
+                  "Баланс: ${currentAccount.balance}₽",
                 ),
                 IconButton(onPressed: () {},
-                    icon: const Icon(Icons.keyboard_arrow_down)), //todo изменение счета
+                    icon: const Icon(Icons.keyboard_arrow_down)),
 
               ]
           ),
@@ -1285,9 +1314,10 @@ class GoalsList extends StatefulWidget {
 }
 
 class _GoalsListState extends State<GoalsList> {
+  //экран отображающий все поставленные цели
 
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-  Account currentAccount = Account("title", 0, "currency", "currencyIconPath", []);
+  Account currentAccount = Account("title", 0, "₽", "currencyIconPath", []);
   Map<String, dynamic> _deviceData = <String, dynamic>{};
 
   List repeatList = [];
@@ -1362,7 +1392,7 @@ class _GoalsListState extends State<GoalsList> {
           title: Row(
               children: [
                 Text(
-                  "Баланс: ${currentAccount.balance}\$",
+                  "Баланс: ${currentAccount.balance}₽",
                 )
               ]
           ),
@@ -1425,7 +1455,7 @@ class _GoalsListState extends State<GoalsList> {
 
                                             ListTile(
                                               title: Text(g.category),
-                                              subtitle: Text("$type ${g.amount}${currentAccount.currency}"),
+                                              subtitle: Text("$type ${g.amount}₽"),
                                             ),
                                             if (g.secondDate.isAfter(DateTime.now()) && !(g.checkRes(stat) && document["type"]))
                                               ListTile(
@@ -1472,6 +1502,9 @@ class _GoalsListState extends State<GoalsList> {
 
 
 Map<String, dynamic> _readAndroidBuildData(AndroidDeviceInfo build) {
+
+  //получение данных об устройстве
+
   return <String, dynamic>{
     'version.securityPatch': build.version.securityPatch,
     'version.sdkInt': build.version.sdkInt,
@@ -1504,6 +1537,10 @@ Map<String, dynamic> _readAndroidBuildData(AndroidDeviceInfo build) {
 }
 
 String calculateString(String expression) {
+
+  //подсчет суммы введенной в строку и возврат с округлением до двух знаков после запятой
+  //например если входная строка: "2 + 5 + 3 - 1" функция вернет "9.00"
+
   List<String> parts = expression.split(RegExp(r'(\+|-)')); // разбиваем строку на числа и знаки
   List<String> operators = expression.split(RegExp(r'(\d+(\.\d+)?)')); // получаем только знаки
   double result = double.parse(parts[0]); // первое число
@@ -1519,6 +1556,11 @@ String calculateString(String expression) {
 
 
 String writeDigit(String input, String digit){
+
+  // добавление в строку арифметических символов, символа точки и цифр.
+  // в основном нужна чтобы пользователь не мог поставить дважды подряд арифметический символ
+  // или ввести конструкцию по типу "25.5.5", тк у одного числа может быть лишь одна точка
+
   if (digit == "."){
 
     String curNum = input.split(RegExp(r"(\+|\-)")).last;
@@ -1554,10 +1596,13 @@ String writeDigit(String input, String digit){
 
 
 Future<DateTime> onTapFunction({required BuildContext context}) async {
+
+  //ввод даты
+
   DateTime? pickedDate = await showDatePicker(
     context: context,
     lastDate: DateTime(2077),
-    firstDate: DateTime(2015),
+    firstDate: DateTime(1990),
     initialDate: DateTime.now(),
   );
   if (pickedDate == null) DateTime.now();
@@ -1565,6 +1610,9 @@ Future<DateTime> onTapFunction({required BuildContext context}) async {
 }
 
 Map<String, PieChartSectionData> getPieCharts(Map data, int count){
+
+  //возвращает сегменты круговой диаграммы.
+  // параметр data - словарь, где ключ - название категории, а значение - сумма которая была потрачена/заработана за некий период
 
   List<MaterialColor> colors = [
     Colors.red,

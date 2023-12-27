@@ -1,10 +1,11 @@
 import 'Transaction.dart';
 
 class Account {
+  // Счет пользователя
   late String title;
   late double balance;
-  late String currency; //наверное нужен кортеж с разными падежами валюты
-  late String currencyIconPath;
+  late String currency; //планировалось для расширения в будущем. сейчас не нужно
+  late String currencyIconPath; //планировалось для расширения в будущем. сейчас не нужно
   late List history;
 
   Account(
@@ -14,12 +15,13 @@ class Account {
       );
 
   void addMyTransaction(MyTransaction transaction){
-    //для пополнения счета транзакция должна быть с отрицательной суммой
+    //добавление транзакции на счет и изменение баланса
     history.add(transaction);
     balance += transaction.amount * transaction.type;
   }
 
   Map getStatistics(DateTime start, DateTime end, bool option){
+    // подсчет статистики по категориям за определенный период.
     //если option == true, то будут только доходы. Иначе только расходы
     var statistic = {};
     for(var item in history){
@@ -39,39 +41,13 @@ class Account {
     return statistic;
   }
 
-  int sumByPeriod(DateTime start, DateTime end, bool option) {
-    var statistic = getStatistics(start, end, option);
-    int sum = 0;
-    for (var element in statistic.values) {
-      if (element != null) {
-        sum += element as int;
-      }
-    }
-    return sum;
-  }
-
-  /*List toJsonHistory(){
-    List entries = [];
-    for (var element in history){
-      entries.add(element.toJson);
-    }
-    return entries;
-  }*/
-
   factory Account.fromJson(dynamic json) => Account(
+    //преобразование из json
+
       json["title"],
       json["balance"],
       json["currency"],
       "",//json["currencyIconPath"],
       json["history"]
   );
-
-  Map<String, dynamic> toJson() =>{
-    "title": title,
-    "balance": balance,
-    "currency": currency,
-    "currencyIconPath": currencyIconPath,
-    "history": history/*toJsonHistory()*/,
-
-  };
 }
